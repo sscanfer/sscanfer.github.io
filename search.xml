@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>assert</title>
+    <url>/2021/10/21/assert/</url>
+    <content><![CDATA[<h1 id="断言（assert-Static-assert）"><a href="#断言（assert-Static-assert）" class="headerlink" title="断言（assert, _Static_assert）"></a>断言（assert, _Static_assert）</h1><p>参考资料：</p>
+<ol>
+<li>C Primer Plus 6th 16.12 断言库</li>
+<li><a href="https://www.cnblogs.com/thisway/p/5558914.html">断言(assert)的用法 - thisway_diy - 博客园 (cnblogs.com)</a></li>
+<li><a href="https://www.cnblogs.com/hzcya1995/p/13309246.html">C 语言编程 — 使用 assert 断言进行程序设计 - 不言不语技术 - 博客园 (cnblogs.com)</a></li>
+</ol>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><em>assert.h</em> 头文件支持的断言库是一个用于辅助调试程序的小型库。它由<code>assert()</code>宏组成，接受一个整型表达式作为参数。如果表达式求值为假（非零），<code>assert()</code>宏就在标准错误流<code>stderr</code>中写入一条错误信息，并调用<code>abort()</code>函数终止程序（<code>abort()</code>函数的原型在 <em>stdlib.h</em> 头文件中）。</p>
+<p>assert()宏是为了标识出程序中某些条件为真的关键位置，如果其中的一个具体条件为假，就用 <code>assert()</code>语句终止程序。通常，<code>assert()</code>的参数是一个条件表达式或逻辑表达式。如果 <code>assert()</code>中止了程序，它首先会显示失败的测试、包含测试的文件名和行号。</p>
+<h2 id="assert的用法"><a href="#assert的用法" class="headerlink" title="assert的用法"></a>assert的用法</h2><p>以下程序演示了一个使用assert的小程序。在求平方根之前，该程序断言z是否大于或等于0。程序还错误地减去一个值而不是加上一个值，故意让z得到不合适的值。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 程序清单1</span></span><br><span class="line"><span class="comment"> * assert.c -- 使用 assert()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">double</span> x, y, z;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Enter a pair of numbers ( 0 0 to quit):&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">scanf</span>(<span class="string">&quot;%lf %lf&quot;</span>, &amp;x, &amp;y) == <span class="number">2</span> &amp;&amp; (x != <span class="number">0</span> || y != <span class="number">0</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        z = x * x - y * y;  <span class="comment">/* 本来要用+ */</span></span><br><span class="line">        assert(z &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;answer is %f\n&quot;</span>, <span class="built_in">sqrt</span>(z));</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;Next pair of numbers: &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Done.&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下图：<br><img src="/2021/10/21/assert/assert_c.png" alt="assert.c运行结果"></p>
+<p><strong>分析：</strong><br><em>具体的错误提示因编译器而异</em>。这条消息可能不是指明<code>z &gt;= 0</code>，而是指明没有满足<code>z &gt;=0</code>的条件。<br>用<code>if</code>语句也能完成类似的任务：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (z &lt; <span class="number">0</span>) &#123;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;z less than 0&quot;</span>);</span><br><span class="line">	<span class="built_in">abort</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是，使用<code>assert()</code>有几个好处：它不仅能自动标识文件和出问题的行号，还有一种无需更改代码就能开启或关闭<code>assert()</code>的机制。</p>
+<p>如果认为已经排除了程序的 bug，就可以把下面的宏定义写在包含 <em>assert.h</em> 的位置前面：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> NDEBUG</span></span><br></pre></td></tr></table></figure>
+<p>并重新编译程序，这样编译器就会禁用文件中的所有<code>assert()</code>语句。如果程序又出现问题，可以移除这条<code>#define</code>指令（或者把它注释掉），然后重新编译程序，这样就重新启用了<code>assert()</code>语句。</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><p>每个<code>assert()</code>只检验一个条件，因为同时检验多个条件时,如果断言失败，无法直观的判断是哪个条件失败。</p>
+ <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 反例</span></span><br><span class="line">assert(nOffset&gt;=<span class="number">0</span> &amp;&amp; nOffset+nSize&lt;=m_nInfomationSize);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正例</span></span><br><span class="line">assert(nOffset &gt;= <span class="number">0</span>);</span><br><span class="line">assert(nOffset+nSize &lt;= m_nInfomationSize);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>ASSERT只有在Debug版本中才有效，如果编译为Release版本则被忽略</strong>。换言之，不能在断言中使用改变环境的语句，因为<code>assert</code>只在 <em>DEBUG</em> 时生效，如果这么做，会使用程序在真正运行时遇到问题。</p>
+ <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 反例</span></span><br><span class="line">assert(i++ &lt; <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正例</span></span><br><span class="line">assert(i &lt; <span class="number">100</span>);</span><br><span class="line">i++;</span><br></pre></td></tr></table></figure>
+<p>对于上面程序清单中的反例，如果执行出错（例如初始<code>i &gt; 100</code>)，则<code>i++</code>就不会执行。</p>
+</li>
+<li><p><strong>不能用断言来检查运行时错误：</strong>断言是用来处理内部编程或设计是否符合假设；对于可能会发生的且必须处理的情况要写防错程序，而不是断言。</p>
+ <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 反例</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#incldue <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX 100</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> *result = <span class="literal">NULL</span>;</span><br><span class="line">    result = (<span class="type">int</span>*)<span class="built_in">malloc</span>(MAX * <span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line"></span><br><span class="line">    assert(result != <span class="literal">NULL</span>);  <span class="comment">// 错误用法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; MAX; i++) &#123;</span><br><span class="line">        result[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="Static-assert-C11"><a href="#Static-assert-C11" class="headerlink" title="_Static_assert (C11)"></a>_Static_assert (C11)</h2><blockquote>
+<p><code>assert()</code>表达式是在运行时进行检查。C11新增了一个特性：<code>_Static_assert</code>，可以在编译时检查<code>assert()</code>表达式。</p>
+<p>因此，<code>assert()</code>可以导致正在运行的程序中止，而<code>_Static_assert()</code>可以导致程序无法通过编译。</p>
+</blockquote>
+<p><code>_Static_assert()</code>接受两个参数。第1个参数是<strong>整型常量表达式</strong>，第2个参数是一个字符串。如果第 1 个表达式求值为 0（或_False），编译器会显示字符串，而且不编译该程序。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 程序清单2</span></span><br><span class="line"><span class="comment"> * statasrt.c -- 使用_Static_assert()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;limits.h&gt;</span></span></span><br><span class="line"><span class="keyword">_Static_assert</span>(CHAR_BIT == <span class="number">16</span>, <span class="string">&quot;16-bit char falsely assumed&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;char is 16 bits.&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译结果如下图所示：</p>
+<p><img src="/2021/10/21/assert/statasrt_c.png" alt="statasrt.c编译结果"></p>
+<p><strong>分析：</strong></p>
+<p>根据语法，<code>_Static_assert()</code>被视为声明。因此，它可以出现在函数中，或者在这种情况下出现在函数的外部。</p>
+<p><code>_Static_assert</code>要求它的第1个参数是整型常量表达式，这保证了能在编译期求值（<code>sizeof</code>表达式被视为整型常量）。</p>
+<p><strong>注意：</strong></p>
+<p>在程序清单1中，不能用<code>_Static_assert</code>代替<code>assert</code>，因为<code>assert</code>中作为测试表达式的<code>z &gt; 0</code>不是常量表达式，要到程序运行时才求值。当然，可以在程序清单的<code>main()</code>函数中使用<code>assert(CHAR_BIT == 16)</code>，但这会在编译和运行程序后才生成一条错误信息，很没效率。</p>
+]]></content>
+      <tags>
+        <tag>C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于 hexo 的个人博客搭建</title>
+    <url>/2022/06/11/hexo-installation/</url>
+    <content><![CDATA[<h1 id="基于-hexo-的个人博客搭建"><a href="#基于-hexo-的个人博客搭建" class="headerlink" title="基于 hexo 的个人博客搭建"></a>基于 hexo 的个人博客搭建</h1><blockquote>
+<p>参考 <a href="https://www.bilibili.com/video/BV1Yb411a7ty">手把手教你从0开始搭建自己的个人博客 |无坑版视频教程| hexo</a></p>
+</blockquote>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h3 id="1-安装-nodejs"><a href="#1-安装-nodejs" class="headerlink" title="1. 安装 nodejs"></a>1. 安装 nodejs</h3><blockquote>
+<p>下载地址: <a href="https://nodejs.org">https://nodejs.org</a></p>
+</blockquote>
+<p>安装完成包含两个组件: nodejs, npm. 使用下面的命令查看是否安装成功:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">node -v # 查看 node 版本</span><br><span class="line"></span><br><span class="line">npm -v  # 查看 npm 版本</span><br></pre></td></tr></table></figure>
+<h3 id="2-更换国内镜像源-cnpm"><a href="#2-更换国内镜像源-cnpm" class="headerlink" title="2. 更换国内镜像源 cnpm"></a>2. 更换国内镜像源 cnpm</h3><p><code>npm</code> 国内镜像源慢, 可以使用下面的命令安装 <code>cnpm</code> 解决:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g cnpm --registry=https://registry.npm.taobao.org # -g 全局安装</span><br><span class="line"></span><br><span class="line">cnpm -v                                                        # 查看 cnpm 版本</span><br></pre></td></tr></table></figure>
+<h3 id="3-使用-cnpm-安装-hexo"><a href="#3-使用-cnpm-安装-hexo" class="headerlink" title="3. 使用 cnpm 安装 hexo"></a>3. 使用 cnpm 安装 hexo</h3><p>使用下面的命令安装 hexo 并验证是否安装成功:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cnpm install -g hexo-cli # 安装 hexo</span><br><span class="line"></span><br><span class="line">hexo -v                  # 查询 hexo 版本</span><br></pre></td></tr></table></figure>
+<p>到这里前期环境准备完毕.</p>
+<hr>
+<h2 id="hexo-配置"><a href="#hexo-配置" class="headerlink" title="hexo 配置"></a>hexo 配置</h2><h3 id="1-新建存放博客的目录-并切换进入"><a href="#1-新建存放博客的目录-并切换进入" class="headerlink" title="1. 新建存放博客的目录, 并切换进入"></a>1. 新建存放博客的目录, 并切换进入</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir blog # 比如当前在 D:</span><br><span class="line"></span><br><span class="line">cd blog    # 进入目录</span><br></pre></td></tr></table></figure>
+<h3 id="2-hexo-初始化"><a href="#2-hexo-初始化" class="headerlink" title="2. hexo 初始化"></a>2. hexo 初始化</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo init  # 初始化</span><br></pre></td></tr></table></figure>
+<h3 id="3-启动博客预览"><a href="#3-启动博客预览" class="headerlink" title="3. 启动博客预览"></a>3. 启动博客预览</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo s     # hexo server 启动博客预览, 默认可通过 http://localhost:4000 访问, ctrl+c 即可停止</span><br></pre></td></tr></table></figure>
+<h3 id="4-新建博客文章"><a href="#4-新建博客文章" class="headerlink" title="4. 新建博客文章"></a>4. 新建博客文章</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo n &quot;my_first_blog&quot; # hexo new 默认生成 my_first_blog.md, 位于 D:/blog/source/_posts/ 路径下</span><br></pre></td></tr></table></figure>
+<h3 id="5-编辑后需要先清理"><a href="#5-编辑后需要先清理" class="headerlink" title="5. 编辑后需要先清理"></a>5. 编辑后需要先清理</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo clean # 编辑 my_first_blog.md 并保存后, 先清理本地</span><br></pre></td></tr></table></figure>
+<h3 id="6-生成静态文件"><a href="#6-生成静态文件" class="headerlink" title="6. 生成静态文件"></a>6. 生成静态文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo g # hexo generate 生成静态文件后, 重新 hexo s 即可启动预览</span><br></pre></td></tr></table></figure>
+<p>完成 hexo 本地配置和使用之后, 下一步部署到远端服务器上, 比如 github.io, gitee.io</p>
+<hr>
+<h2 id="部署个人博客到远端"><a href="#部署个人博客到远端" class="headerlink" title="部署个人博客到远端"></a>部署个人博客到远端</h2><h3 id="1-cnpm-安装-hexo-deployer-git"><a href="#1-cnpm-安装-hexo-deployer-git" class="headerlink" title="1. cnpm 安装 hexo-deployer-git"></a>1. cnpm 安装 hexo-deployer-git</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cnpm install --save hexo-deployer-git # 安装过程 WARNING 可忽略</span><br></pre></td></tr></table></figure>
+<h3 id="2-建立远端仓库"><a href="#2-建立远端仓库" class="headerlink" title="2. 建立远端仓库"></a>2. 建立远端仓库</h3><ul>
+<li><p><strong>github page</strong> 则新建仓库名为 <code>sscanfer.github.io</code>, 即可直接通过 <a href="https://sscanfer.github.io/">https://sscanfer.github.io/</a> 访问</p>
+</li>
+<li><p><strong><em>gitee page</em></strong> 则新建仓库名为 <code>sscanfer</code>, 即可直接访问 <a href="https://sscanfer.gitee.io/">https://sscanfer.gitee.io/</a> 访问</p>
+</li>
+</ul>
+<blockquote>
+<p>注意 <code>sscanfer</code> 为 github username 或 gitee 个人空间地址 (可在 “设置-基本设置-个人资料-个人空间地址” 修改)</p>
+</blockquote>
+<h3 id="3-本地配置-config-yml"><a href="#3-本地配置-config-yml" class="headerlink" title="3. 本地配置 _config.yml"></a>3. 本地配置 _config.yml</h3><p>以 github page 为例:</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/sscanfer/sscanfer.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-部署到远端"><a href="#4-部署到远端" class="headerlink" title="4. 部署到远端"></a>4. 部署到远端</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hexo d # hexo deploy 部署到远端</span><br></pre></td></tr></table></figure>
+<p>至此基于 hexo 的个人博客部署完毕. 下面提供多设备提交更新博客的解决方案.</p>
+<hr>
+<h2 id="多设备提交和更新博客的解决方案"><a href="#多设备提交和更新博客的解决方案" class="headerlink" title="多设备提交和更新博客的解决方案"></a>多设备提交和更新博客的解决方案</h2><blockquote>
+<p>参考文章:</p>
+<p><a href="https://www.jianshu.com/p/0b1fccce74e0/">https://www.jianshu.com/p/0b1fccce74e0/</a></p>
+<p><a href="https://blog.csdn.net/ShmilyCoder/article/details/79916973">https://blog.csdn.net/ShmilyCoder/article/details/79916973</a></p>
+<p>主要思路: 利用 git 分支实现.</p>
+<p>hexo 生成的静态博客文件默认放在 <code>master</code> 分支上. 新建 <code>hexo</code> 分支, 然后将 hexo 的源文件 (部署环境文件) 都放在 <code>hexo</code> 分支上, 换新设备时, 直接 <code>git clone hexo</code> 分支即可</p>
+</blockquote>
+<h3 id="1-对-sscanfer-github-io-仓库新建-hexo-分支-并克隆到本地"><a href="#1-对-sscanfer-github-io-仓库新建-hexo-分支-并克隆到本地" class="headerlink" title="1. 对 sscanfer.github.io 仓库新建 hexo 分支, 并克隆到本地"></a>1. 对 sscanfer.github.io 仓库新建 hexo 分支, 并克隆到本地</h3><ul>
+<li>新建分支: 在 <strong>Github</strong> 的 <code>sscanfer.github.io</code> 仓库上新建一个 <code>hexo</code> 分支, 并切换到该分支</li>
+<li>设置为默认分支: 在该仓库-&gt;Settings-&gt;Branches-&gt;Default branch中将默认分支设为 <code>hexo</code>, save 保存</li>
+<li>克隆到本地: 将该仓库克隆到本地，进入该 <code>sscanfer.github.io</code> 文件目录。</li>
+</ul>
+<h3 id="2-将本地博客的部署文件拷贝进-sscanfer-github-io-目录"><a href="#2-将本地博客的部署文件拷贝进-sscanfer-github-io-目录" class="headerlink" title="2. 将本地博客的部署文件拷贝进 sscanfer.github.io 目录"></a>2. 将本地博客的部署文件拷贝进 <code>sscanfer.github.io</code> 目录</h3><ul>
+<li>将本地博客的部署文件<strong>全部</strong>拷贝进 <code>sscanfer.github.io</code> 目录</li>
+<li>将 <code>themes</code> 目录内的 <code>.git</code> 目录删除 (如果有), 因为一个 git 仓库不能包含另一个 git 仓库</li>
+<li>提交至新建的 <code>hexo</code> 分支</li>
+</ul>
+<blockquote>
+<p>删除 <code>themes</code> 目录下的 <code>.git</code> 目录就不能 <code>git pull</code> 更新主题的解决办法:</p>
+<blockquote>
+<p>单独 <code>git clone</code> 主题最新版本, 然后拷贝到当前主题目录替换即可</p>
+</blockquote>
+</blockquote>
+<h3 id="3-新设备的同步方法"><a href="#3-新设备的同步方法" class="headerlink" title="3. 新设备的同步方法"></a>3. 新设备的同步方法</h3><ul>
+<li>克隆 <code>hexo</code> 分支到本地</li>
+<li>切换到 <code>sscanfer.github.io</code> 目录, 执行 <code>npm install</code>. (由于仓库有一个 <code>.gitignore</code> 文件, 里面默认是忽略掉 <code>node_modules</code> 文件夹的, 也就是说仓库的 <code>hexo</code> 分支并没有存储该目录 (也不需要), 所以需要install下)</li>
+</ul>
+]]></content>
+      <categories>
+        <category>工具环境配置</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2022/06/18/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>移动通信基础:</title>
+    <url>/2022/06/28/%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h1 id="移动通信基础"><a href="#移动通信基础" class="headerlink" title="移动通信基础"></a>移动通信基础</h1><h2 id="1-LTE-基本概念"><a href="#1-LTE-基本概念" class="headerlink" title="1. LTE 基本概念"></a>1. LTE 基本概念</h2><h3 id="1-1-LTE-双工方式"><a href="#1-1-LTE-双工方式" class="headerlink" title="1.1 LTE 双工方式"></a>1.1 LTE 双工方式</h3><ul>
+<li>FDD： (Freqency Division Duplexing) 频分双工</li>
+<li>TDD： (Time Division Duplexing) 时分双工</li>
+</ul>
+<h3 id="1-2-LTE-三种语音解决方案"><a href="#1-2-LTE-三种语音解决方案" class="headerlink" title="1.2 LTE 三种语音解决方案"></a>1.2 LTE 三种语音解决方案</h3><blockquote>
+<p>LTE 设计上就是用来上网的，没有语音通话功能。但是2/3G是支持的。</p>
+</blockquote>
+<ul>
+<li><p>CSFB： (Circuit Switched Fallback) CS语音回落。 打电话时会从 4G 回到 2/3G， 例如：</p>
+<ul>
+<li>中国移动没有了 3G，回到 2G 打电话</li>
+<li>中国联通 3G 比较好，回落到 3G 打电话</li>
+</ul>
+</li>
+<li><p>单卡双待：</p>
+<ul>
+<li>中国电信比较特殊， 因为 2/3G 是高通技术， 4G 是 3GPP， 不同技术不能直接回落。 因此使用单卡双待技术。</li>
+</ul>
+</li>
+<li><p>VoLTE： (Voice over LTE)， 高清语音， 在 4G 上打电话。</p>
+<ul>
+<li>关键技术： IMS(Ip Media Subsystem)， IP多媒体子系统。</li>
+<li>CSFB 和单卡双待的局限性在于语音通话时就无法使用 4G</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-3-LTE-理论网速-100-Mbps"><a href="#1-3-LTE-理论网速-100-Mbps" class="headerlink" title="1.3 LTE 理论网速 100 Mbps"></a>1.3 LTE 理论网速 100 Mbps</h3><ul>
+<li>Mbps中的 b 表示 bit.</li>
+<li>区别于日常下载速度的描述 100 MB, B 表示 Byte. 1 Byte = 8 bit.</li>
+</ul>
+<h2 id="2-实际应用"><a href="#2-实际应用" class="headerlink" title="2. 实际应用"></a>2. 实际应用</h2><p>3GPP 阵营：</p>
+<ul>
+<li>中国移动： GSM -&gt; GPRS -&gt; EDGE -&gt; TD-SCDMA -&gt; HSDPA -&gt; HSUPA -&gt; HSPA+ R7 -&gt; LTE TDD</li>
+<li>中国联通： GSM -&gt; GPRS -&gt; WCDMA R99 -&gt; HSDPA R5 -&gt; HSUPA R6 -&gt; HSPA+ R7 -&gt; LTE FDD</li>
+</ul>
+<p>高通阵营：</p>
+<ul>
+<li>中国电信： CDMA -&gt; CDMA 2000 1X EV-DO -&gt; EV-DO Rev。A -&gt; LTE FDD (转到3GPP)</li>
+</ul>
+<p>WIMAX：</p>
+<ul>
+<li>小众， 国内未引进</li>
+</ul>
+<h2 id="3-基站相关"><a href="#3-基站相关" class="headerlink" title="3. 基站相关"></a>3. 基站相关</h2><h3 id="3-1-小区和扇区的区别"><a href="#3-1-小区和扇区的区别" class="headerlink" title="3.1 小区和扇区的区别"></a>3.1 小区和扇区的区别</h3><ul>
+<li>Sector: 扇区，基站的天线。比如有三面天线就是有三个扇区</li>
+<li>Cell: 小区，传统意义上可以认为是扇区发送的一路独立的信号<ul>
+<li>一面天线可能发射多个小区。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-基站的分类"><a href="#3-2-基站的分类" class="headerlink" title="3.2 基站的分类"></a>3.2 基站的分类</h3><ul>
+<li>宏站：一般的室外基站，覆盖范围从几百米到上千米。<ul>
+<li>宏站的一个问题是由于电磁波穿透能力有限，地下室，高层楼宇，电梯等场所覆盖不到。</li>
+</ul>
+</li>
+<li>室内分布：简称室分，比如吸顶天线。</li>
+</ul>
+<h2 id="4-移动通信网络架构"><a href="#4-移动通信网络架构" class="headerlink" title="4. 移动通信网络架构"></a>4. 移动通信网络架构</h2><p>基本由 <strong>核心网</strong>，<strong>接入网</strong>，<strong>终端设备</strong> 三部分组成。</p>
+<ul>
+<li>核心网：最重要的功能就是交换机，还有计费，存储信息，位置等功能。</li>
+<li>接入网：核心设备是基站，2/3G 时还有基站控制器</li>
+</ul>
+<blockquote>
+<p>传输：核心网与接入网之间的连接。</p>
+</blockquote>
+<h2 id="5-终端设备识别"><a href="#5-终端设备识别" class="headerlink" title="5. 终端设备识别"></a>5. 终端设备识别</h2><ul>
+<li>IMSI: 国际移动用户用户识别码，识别 SIM 卡，相当于 SIM 的身份证号</li>
+<li>IMEI: 国际移动设备识别码，识别手机硬件（不包括 SIM 卡）。</li>
+<li>TMSI: 临时移动用户识别码，用来代替IMSI。<ul>
+<li>IMSI 如果被非法获取，可能造成信息安全问题。因此只在首次通信时注册使用，后续则使用TMSI。</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-信号相关"><a href="#6-信号相关" class="headerlink" title="6. 信号相关"></a>6. 信号相关</h2><h3 id="6-1-信号-干扰-噪声"><a href="#6-1-信号-干扰-噪声" class="headerlink" title="6.1 信号 干扰 噪声"></a>6.1 信号 干扰 噪声</h3><ul>
+<li>干扰：同频干扰</li>
+<li>噪声：环境噪声，比如微波炉，电视工作产生的噪声，太阳粒子摩擦大气层造成的干扰。一般情况下，噪声较有用信号低。</li>
+</ul>
+<h3 id="6-2-香农定理"><a href="#6-2-香农定理" class="headerlink" title="6.2 香农定理"></a>6.2 香农定理</h3><p>公式：</p>
+<script type="math/tex; mode=display">C=Blog_2(1+\frac SN)</script><ul>
+<li>$C$ 信道容量</li>
+<li>$B$ 信道带宽</li>
+<li>$S$ 平均信号功率</li>
+<li>$N$ 平均噪声功率</li>
+<li>$\frac SN$ 信噪比</li>
+</ul>
+<p>通俗理解：$C$ 代表网速，那么当带宽 $B$ 越大，$\frac SN$ 越高时，网速也就越快。</p>
+<blockquote>
+<p>WCDMA 最大带宽 5MHz，LTE 最大带宽 20MHz，NR 最大带宽 100MHz。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>通信</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>详解dBm和dB</title>
+    <url>/2022/06/28/%E8%AF%A6%E8%A7%A3dBm%E5%92%8CdB/</url>
+    <content><![CDATA[<h1 id="详解-dB-和-dBm"><a href="#详解-dB-和-dBm" class="headerlink" title="详解 $dB$ 和 $dBm$"></a>详解 $dB$ 和 $dBm$</h1><h2 id="分贝毫瓦-dBm"><a href="#分贝毫瓦-dBm" class="headerlink" title="分贝毫瓦 $dBm$"></a>分贝毫瓦 $dBm$</h2><ul>
+<li>表征信号强度的单位</li>
+<li>与 $mW$ 之间的换算关系：<script type="math/tex">dBm = 10lgmW</script></li>
+<li>例如 -40dBm = 0.0001mW, 使用 dbm 更方便</li>
+</ul>
+<blockquote>
+<p>GSM 手机的最大发射功率为 2W = 33dBm;</p>
+<p>CDMA 手机的最大发射功率 200mW = 23dBm;</p>
+<p>4G 一面天线的发射功率为 20W = 43dBm;</p>
+</blockquote>
+<h2 id="分贝-dB"><a href="#分贝-dB" class="headerlink" title="分贝 $dB$"></a>分贝 $dB$</h2><ul>
+<li>表示一个相对值，通信中一般表征干扰强度</li>
+<li>公式：<script type="math/tex">dB=10lg\frac{P_1}{P_2}</script><ul>
+<li>一般 $P_1$ 表示有用信号强度，$P_2$ 表示干扰信号强度</li>
+</ul>
+</li>
+<li>根据对数运算规则，上式可换算为，<script type="math/tex">dB=10lg\frac{P_1}{P_2}=10lgP_1 - 10lgP_2</script><ul>
+<li>式中 $10lgP_1$ 单位为 dBm</li>
+</ul>
+</li>
+<li>举例来说，<script type="math/tex">xdB = ydBm - zdBm</script><ul>
+<li>通过交换运算数，我们得到 <script type="math/tex">ydBm=zdBm+xdB</script></li>
+<li>上式非常常用，比如在信号调整中，我们把强度为 zdBm 的信号加 xdB 的衰减，信号强度就变为 ydBm</li>
+</ul>
+</li>
+</ul>
+<h2 id="3dB"><a href="#3dB" class="headerlink" title="3dB"></a>3dB</h2><ul>
+<li>假设干扰信号功率为 p, 有用信号功率为 2p, 那么根据上面的公式 <script type="math/tex">10lg \frac{2p}p=10lg2\approx3</script><ul>
+<li>根据分贝的定义，这里的 3 的单位就是 dB. 也就意味着 3dB 表示信号强度差一倍。</li>
+<li>因此 3dB 常用于功率翻倍。</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>通信</category>
+      </categories>
+  </entry>
+</search>

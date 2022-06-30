@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="断言（assert, _Static_assert）参考资料：  C Primer Plus 6th 16.12 断言库 断言(assert)的用法 - thisway_diy - 博客园 (cnblogs.com) C 语言编程 — 使用 assert 断言进行程序设计 - 不言不语技术 - 博客园 (cnblogs.com)  简介assert.h 头文件支持的断言库是一个用于辅助调试程序的小">
@@ -124,7 +124,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">3</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">5</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">1</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories<span class="badge">2</span></a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -246,15 +246,12 @@
 <p>assert()宏是为了标识出程序中某些条件为真的关键位置，如果其中的一个具体条件为假，就用 <code>assert()</code>语句终止程序。通常，<code>assert()</code>的参数是一个条件表达式或逻辑表达式。如果 <code>assert()</code>中止了程序，它首先会显示失败的测试、包含测试的文件名和行号。</p>
 <h2 id="assert的用法"><a href="#assert的用法" class="headerlink" title="assert的用法"></a>assert的用法</h2><p>以下程序演示了一个使用assert的小程序。在求平方根之前，该程序断言z是否大于或等于0。程序还错误地减去一个值而不是加上一个值，故意让z得到不合适的值。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 程序清单1</span></span><br><span class="line"><span class="comment"> * assert.c -- 使用 assert()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;math.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">double</span> x, y, z;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Enter a pair of numbers ( 0 0 to quit):&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">scanf</span>(<span class="string">&quot;%lf %lf&quot;</span>, &amp;x, &amp;y) == <span class="number">2</span> &amp;&amp; (x != <span class="number">0</span> || y != <span class="number">0</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        z = x * x - y * y;  <span class="comment">/* 本来要用+ */</span></span><br><span class="line">        assert(z &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;answer is %f\n&quot;</span>, <span class="built_in">sqrt</span>(z));</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;Next pair of numbers: &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;Done.&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>运行结果如下图：<br><img src="/2021/10/21/assert/assert_c.png" alt="assert.c运行结果"></p>
 <p><strong>分析：</strong><br><em>具体的错误提示因编译器而异</em>。这条消息可能不是指明<code>z &gt;= 0</code>，而是指明没有满足<code>z &gt;=0</code>的条件。<br>用<code>if</code>语句也能完成类似的任务：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (z &lt; <span class="number">0</span>) &#123;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;z less than 0&quot;</span>);</span><br><span class="line">	<span class="built_in">abort</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>但是，使用<code>assert()</code>有几个好处：它不仅能自动标识文件和出问题的行号，还有一种无需更改代码就能开启或关闭<code>assert()</code>的机制。</p>
 <p>如果认为已经排除了程序的 bug，就可以把下面的宏定义写在包含 <em>assert.h</em> 的位置前面：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> NDEBUG</span></span><br></pre></td></tr></table></figure>
-
 <p>并重新编译程序，这样编译器就会禁用文件中的所有<code>assert()</code>语句。如果程序又出现问题，可以移除这条<code>#define</code>指令（或者把它注释掉），然后重新编译程序，这样就重新启用了<code>assert()</code>语句。</p>
 <h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
 <li><p>每个<code>assert()</code>只检验一个条件，因为同时检验多个条件时,如果断言失败，无法直观的判断是哪个条件失败。</p>
@@ -262,11 +259,11 @@
 </li>
 <li><p><strong>ASSERT只有在Debug版本中才有效，如果编译为Release版本则被忽略</strong>。换言之，不能在断言中使用改变环境的语句，因为<code>assert</code>只在 <em>DEBUG</em> 时生效，如果这么做，会使用程序在真正运行时遇到问题。</p>
  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反例</span></span><br><span class="line">assert(i++ &lt; <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 正例</span></span><br><span class="line">assert(i &lt; <span class="number">100</span>);</span><br><span class="line">i++;</span><br></pre></td></tr></table></figure>
-
 <p>对于上面程序清单中的反例，如果执行出错（例如初始<code>i &gt; 100</code>)，则<code>i++</code>就不会执行。</p>
 </li>
 <li><p><strong>不能用断言来检查运行时错误：</strong>断言是用来处理内部编程或设计是否符合假设；对于可能会发生的且必须处理的情况要写防错程序，而不是断言。</p>
- <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反例</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#incldue <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX 100</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> *result = <span class="literal">NULL</span>;</span><br><span class="line">    result = (<span class="type">int</span>*)<span class="built_in">malloc</span>(MAX * <span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line"></span><br><span class="line">    assert(result != <span class="literal">NULL</span>);  <span class="comment">// 错误用法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; MAX; i++) &#123;</span><br><span class="line">        result[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 反例</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#incldue <span class="string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX 100</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> *result = <span class="literal">NULL</span>;</span><br><span class="line">    result = (<span class="type">int</span>*)<span class="built_in">malloc</span>(MAX * <span class="keyword">sizeof</span>(<span class="type">int</span>));</span><br><span class="line"></span><br><span class="line">    assert(result != <span class="literal">NULL</span>);  <span class="comment">// 错误用法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; MAX; i++) &#123;</span><br><span class="line">        result[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 <h2 id="Static-assert-C11"><a href="#Static-assert-C11" class="headerlink" title="_Static_assert (C11)"></a>_Static_assert (C11)</h2><blockquote>
 <p><code>assert()</code>表达式是在运行时进行检查。C11新增了一个特性：<code>_Static_assert</code>，可以在编译时检查<code>assert()</code>表达式。</p>
@@ -274,7 +271,6 @@
 </blockquote>
 <p><code>_Static_assert()</code>接受两个参数。第1个参数是<strong>整型常量表达式</strong>，第2个参数是一个字符串。如果第 1 个表达式求值为 0（或_False），编译器会显示字符串，而且不编译该程序。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 程序清单2</span></span><br><span class="line"><span class="comment"> * statasrt.c -- 使用_Static_assert()</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;limits.h&gt;</span></span></span><br><span class="line"><span class="keyword">_Static_assert</span>(CHAR_BIT == <span class="number">16</span>, <span class="string">&quot;16-bit char falsely assumed&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;char is 16 bits.&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>编译结果如下图所示：</p>
 <p><img src="/2021/10/21/assert/statasrt_c.png" alt="statasrt.c编译结果"></p>
 <p><strong>分析：</strong></p>
@@ -378,17 +374,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">categories</span>
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
         <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">tags</span>
+        <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>
