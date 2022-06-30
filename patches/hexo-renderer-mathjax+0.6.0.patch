@@ -1,0 +1,12 @@
+diff --git a/node_modules/hexo-renderer-mathjax/mathjax.html b/node_modules/hexo-renderer-mathjax/mathjax.html
+index 1f4db2a..bb850a4 100644
+--- a/node_modules/hexo-renderer-mathjax/mathjax.html
++++ b/node_modules/hexo-renderer-mathjax/mathjax.html
+@@ -12,4 +12,4 @@
+             all[i].SourceElement().parentNode.className += ' has-jax';
+     });
+ </script>
+-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+\ No newline at end of file
++<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+\ No newline at end of file

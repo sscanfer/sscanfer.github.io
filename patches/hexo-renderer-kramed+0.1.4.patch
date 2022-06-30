@@ -1,0 +1,13 @@
+diff --git a/node_modules/hexo-renderer-kramed/lib/renderer.js b/node_modules/hexo-renderer-kramed/lib/renderer.js
+index f455195..ecf71c9 100644
+--- a/node_modules/hexo-renderer-kramed/lib/renderer.js
++++ b/node_modules/hexo-renderer-kramed/lib/renderer.js
+@@ -64,7 +64,7 @@ kramed.setOptions({
+ // Change inline math rule
+ function formatText(text) {
+   // Fit kramed's rule: $$ + \1 + $$
+-  return text.replace(/`\$(.*?)\$`/g, '$$$$$1$$$$');
++  return text;
+ }
+ 
+ module.exports = function(data, options) {
