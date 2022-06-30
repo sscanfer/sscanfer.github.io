@@ -105,3 +105,11 @@ deploy:
   type: git
   repo: https://github.com/sscanfer/sscanfer.github.io.git
   branch: master
+
+# hexo-generator-searchdb
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+  content: true
